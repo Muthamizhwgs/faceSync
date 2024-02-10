@@ -5,7 +5,7 @@ const catchAsync = require('../utils/catchAsync');
 const { userService } = require('../services');
 
 const createUser = catchAsync(async (req, res) => {
-  console.log(req.file)
+  console.log(req.file, "asdfsadf")
     const user = await userService.createUser(req.body);
   if(req.file){
     let path = 'images/'+req.file.filename
