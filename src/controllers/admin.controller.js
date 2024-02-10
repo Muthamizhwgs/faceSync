@@ -3,6 +3,7 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const AdminService = require('../services/admin.service')
 const { generateAuthTokens } = require('../services/token.service')
+
 const createFaceSyncUsers = catchAsync(async(req,res)=>{
     const data = await AdminService.createFaceSyncUsers(req);
     res.send(data)
