@@ -5,8 +5,14 @@ const catchAsync = require('../utils/catchAsync');
 const { userService } = require('../services');
 
 const createUser = catchAsync(async (req, res) => {
-  const user = await userService.createUser(req.body);
-  res.status(httpStatus.CREATED).send(user);
+  console.log(req.file)
+    const user = await userService.createUser(req.body);
+  if(req.file){
+    let path = 'images/'+req.file.filename
+    user.image = path
+    user.save()
+  }
+  // res.status(httpStatus.CREATED).send(user);
 });
 
 const getUsers = catchAsync(async (req, res) => {
