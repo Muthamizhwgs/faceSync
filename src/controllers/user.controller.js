@@ -12,7 +12,7 @@ const createUser = catchAsync(async (req, res) => {
     user.image = path
     user.save()
   }
-  // res.status(httpStatus.CREATED).send(user);
+  res.status(httpStatus.CREATED).send(user);
 });
 
 const getUsers = catchAsync(async (req, res) => {
