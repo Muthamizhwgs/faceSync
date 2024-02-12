@@ -50,12 +50,12 @@ const getEvents = async (req) => {
         as:'assigned'
       }
     },
-    {
-      $unwind:{
-        preserveNullAndEmptyArrays:true,
-        path:"$assigned"
-      }
-    },
+    // {
+    //   $unwind:{
+    //     preserveNullAndEmptyArrays:true,
+    //     path:"$assigned"
+    //   }
+    // },
     {
       $project:{
         _id:1,
@@ -63,7 +63,7 @@ const getEvents = async (req) => {
         eventLocation:1,
         eventDate:1,
         eventSummary:1,
-        assigned:"$assigned"
+        assigned:{$size:"$assigned"}
       }
     }
   ]);
