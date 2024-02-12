@@ -87,7 +87,7 @@ const createAdminBySuperAdmin = async (req) => {
 const updateEventsById = async (req) => {
   let id = req.params.id;
   let findEvent = await Event.findById(id);
-  if (findEvent) {
+  if (!findEvent) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Event Not Found');
   }
   findEvent = await Event.findByIdAndUpdate({ _id: id }, req.body, { new: true });
