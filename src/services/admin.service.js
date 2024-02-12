@@ -1,6 +1,7 @@
 const { Admin, Event, PhotoGrapher, EventAssign } = require('../models/admin');
 const ApiError = require('../utils/ApiError');
 const httpStatus = require('http-status');
+const Aws = require('aws-sdk');
 
 function generateSixDigitPasswordWithLetters() {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -144,6 +145,30 @@ const getEventsByPhotoGrapher = async (req) => {
   return values;
 };
 
+const getAdmins = async (req) => {
+  let values = await Admin.aggregate([
+    {
+      $match: {
+        userId: req.userId,
+      },
+    },
+  ]);
+  return values;
+};
+
+const folderCreationDemo = async () => {
+  // Aws
+  const spacesEndpoint = new AWS.Endpoint('https://facesync.blr1.cdn.digitaloceanspaces.com');
+
+  const s3 = new AWS.S3({
+    endpoint: 'https://facesync.blr1.cdn.digitaloceanspaces.com',
+    useAccelerateEndpoint: false,
+    s3ForcePathStyle: false,
+    region: 'us-east-1',
+    credentials: new AWS.Credentials('DO00EJFRZZE7JJX4HYJW', 'sORWVDUfafFT0LP9O52AM56mMLsnXARg0AH60qQRF8k'),
+  });
+};
+
 module.exports = {
   createFaceSyncUsers,
   Login,
@@ -156,4 +181,5 @@ module.exports = {
   updatePhotographer,
   EventAssign_to_PhotoGrapher,
   getEventsByPhotoGrapher,
+  getAdmins
 };

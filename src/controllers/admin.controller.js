@@ -60,6 +60,11 @@ const getEventsByPhotoGrapher = catchAsync(async(req,res)=>{
     res.send(data)
 })
 
+const getAdmins = catchAsync(async(req,res)=>{
+    const data = await AdminService.getAdmins(req);
+    res.send(data)
+})
+
 module.exports = {
     createFaceSyncUsers,
     Login,
@@ -71,5 +76,6 @@ module.exports = {
     updateEventsById,
     updatePhotographer,
     EventAssign_to_PhotoGrapher,
-    getEventsByPhotoGrapher
+    getEventsByPhotoGrapher,
+    getAdmins
 }
