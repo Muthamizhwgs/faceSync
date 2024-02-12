@@ -28,7 +28,8 @@ const AdminSchema = new mongoose.Schema(
       type: String,
     },
     userId: String,
-    address:String
+    address:String,
+    companyName:String,
   },
   { timestamps: true }
 );

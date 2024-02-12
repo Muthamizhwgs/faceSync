@@ -16,7 +16,8 @@ function generateSixDigitPasswordWithLetters() {
 const createFaceSyncUsers = async (req) => {
   let pwd = generateSixDigitPasswordWithLetters();
   let creations = await Admin.create({ ...req.body, ...{ password: pwd, userId: req.userId } });
-  return creations;
+  console.log(req.body)
+  return req.body;
 };
 
 const Login = async (req) => {
@@ -28,8 +29,8 @@ const Login = async (req) => {
 };
 
 const createEvents = async (req) => {
-  let foldername = await folderCreationDemo(req.body.eventName)
-  let creations = await Event.create({ ...req.body, ...{ userId: req.userId, foldername:foldername } });
+  let foldername = await folderCreationDemo(req.body.eventName);
+  let creations = await Event.create({ ...req.body, ...{ userId: req.userId, foldername: foldername } });
   return creations;
 };
 
@@ -147,11 +148,12 @@ const getEventsByPhotoGrapher = async (req) => {
 };
 
 const getAdmins = async (req) => {
+  console.log(req.userId)
   let values = await Admin.aggregate([
     {
       $match: {
         userId: req.userId,
-        role:"admins"
+        role: 'admin',
       },
     },
   ]);
@@ -171,11 +173,13 @@ const folderCreationDemo = async (folderName) => {
   let pwd = generateSixDigitPasswordWithLetters();
   async function createFolder(folderPath) {
     try {
-      await s3.putObject({
-        Bucket: 'facesync',
-        Key: folderPath,
-        Body: ''
-      }).promise();
+      await s3
+        .putObject({
+          Bucket: 'facesync',
+          Key: folderPath,
+          Body: '',
+        })
+        .promise();
     } catch (error) {
       console.error(`Error creating folder ${folderPath}:`, error);
     }
@@ -186,7 +190,40 @@ const folderCreationDemo = async (folderName) => {
     await createFolder(`${folderName}-${pwd}/photographer/`);
   }
   createFolders();
-  return `${folderName}-${pwd}`
+  return `${folderName}-${pwd}`;
+};
+
+const uploadQr = async (folderName) => {
+  const spacesEndpoint = new AWS.Endpoint('https://blr1.digitaloceanspaces.com');
+  const s3 = new AWS.S3({
+    endpoint: spacesEndpoint,
+    // useAccelerateEndpoint: false,
+    // s3ForcePathStyle: false,
+    // region: 'us-east-1',
+    credentials: new AWS.Credentials('DO00EJFRZZE7JJX4HYJW', 'sORWVDUfafFT0LP9O52AM56mMLsnXARg0AH60qQRF8k'),
+  });
+  const url =  'https://facesync.whydev.co.in?id='+folderName;
+  const qrCode = await qr.toDataURL(url);
+  const data = qrCode.replace(/^data:image\/\w+;base64,/, '');
+  const buffer = Buffer.from(data, 'base64');
+
+  return promise(async(resolve,reject)=>{
+    const params = {
+      Bucket: 'facesync', 
+      Key: `${folder.png}`, 
+      Body: buffer,
+    };
+    return new Promise(async,(resolve,reject)=>{
+      s3.upload(params,async function(err,data){
+        if(err){
+          reject(err)
+        }else{
+          resolve({message:"asasd"})
+        }
+      })
+    })
+
+  })
 };
 
 module.exports = {
