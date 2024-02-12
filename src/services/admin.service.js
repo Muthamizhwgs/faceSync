@@ -42,6 +42,30 @@ const getEvents = async (req) => {
     {
       $match: { userId: userId, active:true },
     },
+    {
+      $lookup:{
+        from:'eventassigns',
+        localField:"_id",
+        foreignField:"eventId",
+        as:'assigned'
+      }
+    },
+    {
+      $unwind:{
+        preserveNullAndEmptyArrays:true,
+        path:"$assigned"
+      }
+    },
+    {
+      $project:{
+        _id:1,
+        eventName:1,
+        eventLocation:1,
+        eventDate:1,
+        eventSummary:1,
+        assigned:"$assigned"
+      }
+    }
   ]);
   return values;
 };
@@ -79,6 +103,9 @@ const getPhotographers = async (req) => {
         active:true
       },
     },
+    {
+
+    }
   ]);
   return val;
 };
