@@ -1,4 +1,4 @@
-const { Admin, Event, PhotoGrapher } = require('../models/admin');
+const { Admin, Event, PhotoGrapher, EventAssign } = require('../models/admin');
 const ApiError = require('../utils/ApiError');
 const httpStatus = require('http-status');
 
@@ -14,7 +14,7 @@ function generateSixDigitPasswordWithLetters() {
 
 const createFaceSyncUsers = async (req) => {
   let pwd = generateSixDigitPasswordWithLetters();
-  let creations = await Admin.create({ ...req.body, ...{ password: pwd, userId:req.userId } });
+  let creations = await Admin.create({ ...req.body, ...{ password: pwd, userId: req.userId } });
   return creations;
 };
 
@@ -55,17 +55,93 @@ const createPhotoGrapher = async (req) => {
   return creation;
 };
 
+const updatePhotographer = async (req) => {
+  let id = req.params.id;
+  let values = await Admin.findById(id);
+  if (values) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Photographer Not Found');
+  }
+  values = await Admin.findByIdAndUpdate({ _id: id }, req.body, { new: true });
+  return values;
+};
+
 const getPhotographers = async (req) => {
   let userId = req.userId;
   let val = await Admin.aggregate([
     {
       $match: {
         role: 'photographer',
-        userId:userId
+        userId: userId,
       },
     },
   ]);
-  return val
+  return val;
+};
+
+const createAdminBySuperAdmin = async (req) => {
+  let pwd = generateSixDigitPasswordWithLetters();
+  let creations = await Admin.create({ ...req.body, ...{ password: pwd } });
+  return creations;
+};
+
+const updateEventsById = async (req) => {
+  let id = req.params.id;
+  let findEvent = await Event.findById(id);
+  if (findEvent) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Event Not Found');
+  }
+  findEvent = await Event.findByIdAndUpdate({ _id: id }, req.body, { new: true });
+  return findEvent;
+};
+
+const EventAssign_to_PhotoGrapher = async (req) => {
+  let userId = req.userId;
+  let values = await EventAssign.create({ ...req.body, ...{ userId: userId } });
+  return values;
+};
+
+const getEventsByPhotoGrapher = async (req) => {
+  let userId = req.userId;
+  let values = await EventAssign.aggregate([
+    {
+      $match: {
+        photographerId: userId,
+      },
+    },
+    {
+      $lookup: {
+        from: 'events',
+        localField: 'eventId',
+        foreignField: '_id',
+        as: 'events',
+      },
+    },
+    {
+      $unwind: { preserveNullAndEmptyArrays: true, path: '$events' },
+    },
+    {
+      $lookup: {
+        from: 'admins',
+        localField: 'photographerId',
+        foreignField: '_id',
+        as: 'photographer',
+      },
+    },
+    {
+      $unwind: { preserveNullAndEmptyArrays: true, path: '$photographer' },
+    },
+    {
+      $project: {
+        _id: 1,
+        eventId: 1,
+        eventName: '$events.eventName',
+        eventLocation: '$events.eventLocation',
+        eventDate: '$events.eventDate',
+        eventSummary: '$events.eventSummary',
+      },
+    },
+  ]);
+  return values;
 };
 
 module.exports = {
@@ -74,5 +150,10 @@ module.exports = {
   createEvents,
   getEvents,
   createPhotoGrapher,
-  getPhotographers
+  getPhotographers,
+  createAdminBySuperAdmin,
+  updateEventsById,
+  updatePhotographer,
+  EventAssign_to_PhotoGrapher,
+  getEventsByPhotoGrapher,
 };
