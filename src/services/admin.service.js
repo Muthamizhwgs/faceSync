@@ -40,7 +40,7 @@ const getEvents = async (req) => {
   console.log(req.userId);
   let values = await Event.aggregate([
     {
-      $match: { userId: userId },
+      $match: { userId: userId, active:true },
     },
   ]);
   return values;
@@ -76,6 +76,7 @@ const getPhotographers = async (req) => {
       $match: {
         role: 'photographer',
         userId: userId,
+        active:true
       },
     },
   ]);
@@ -155,6 +156,7 @@ const getAdmins = async (req) => {
       $match: {
         userId: req.userId,
         role: 'admin',
+        active:true
       },
     },
   ]);
