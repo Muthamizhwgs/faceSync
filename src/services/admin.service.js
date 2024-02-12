@@ -103,9 +103,6 @@ const getPhotographers = async (req) => {
         active:true
       },
     },
-    {
-
-    }
   ]);
   return val;
 };
