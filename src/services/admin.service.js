@@ -2,6 +2,7 @@ const { Admin, Event, PhotoGrapher, EventAssign } = require('../models/admin');
 const ApiError = require('../utils/ApiError');
 const httpStatus = require('http-status');
 const AWS = require('aws-sdk');
+const qr = require('qrcode');
 
 function generateSixDigitPasswordWithLetters() {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -16,8 +17,7 @@ function generateSixDigitPasswordWithLetters() {
 const createFaceSyncUsers = async (req) => {
   let pwd = generateSixDigitPasswordWithLetters();
   let creations = await Admin.create({ ...req.body, ...{ password: pwd, userId: req.userId } });
-  console.log(req.body)
-  return req.body;
+  return creations;
 };
 
 const Login = async (req) => {
@@ -30,7 +30,8 @@ const Login = async (req) => {
 
 const createEvents = async (req) => {
   let foldername = await folderCreationDemo(req.body.eventName);
-  let creations = await Event.create({ ...req.body, ...{ userId: req.userId, foldername: foldername } });
+  let qrURL = await uploadQr(foldername);
+  let creations = await Event.create({ ...req.body, ...{ userId: req.userId, foldername: foldername,qrURL:qrURL } });
   return creations;
 };
 
@@ -61,7 +62,7 @@ const createPhotoGrapher = async (req) => {
 const updatePhotographer = async (req) => {
   let id = req.params.id;
   let values = await Admin.findById(id);
-  if (values) {
+  if (!values) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Photographer Not Found');
   }
   values = await Admin.findByIdAndUpdate({ _id: id }, req.body, { new: true });
@@ -148,7 +149,7 @@ const getEventsByPhotoGrapher = async (req) => {
 };
 
 const getAdmins = async (req) => {
-  console.log(req.userId)
+  console.log(req.userId);
   let values = await Admin.aggregate([
     {
       $match: {
@@ -202,28 +203,26 @@ const uploadQr = async (folderName) => {
     // region: 'us-east-1',
     credentials: new AWS.Credentials('DO00EJFRZZE7JJX4HYJW', 'sORWVDUfafFT0LP9O52AM56mMLsnXARg0AH60qQRF8k'),
   });
-  const url =  'https://facesync.whydev.co.in?id='+folderName;
+  const url = 'https://facesync.whydev.co.in?event=' + folderName;
   const qrCode = await qr.toDataURL(url);
   const data = qrCode.replace(/^data:image\/\w+;base64,/, '');
   const buffer = Buffer.from(data, 'base64');
-
-  return promise(async(resolve,reject)=>{
-    const params = {
-      Bucket: 'facesync', 
-      Key: `${folder.png}`, 
-      Body: buffer,
-    };
-    return new Promise(async,(resolve,reject)=>{
-      s3.upload(params,async function(err,data){
-        if(err){
-          reject(err)
-        }else{
-          resolve({message:"asasd"})
-        }
-      })
-    })
-
-  })
+  const params = {
+    Bucket: 'facesync',
+    Key: `${folderName}.png`,
+    Body: buffer,
+    ACL: 'public-read',
+  };
+  return new Promise((resolve, reject) => {
+    s3.upload(params, function (err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        console.log(data);
+        resolve(data.Location);
+      }
+    });
+  });
 };
 
 module.exports = {

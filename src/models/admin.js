@@ -48,6 +48,7 @@ const EventSchema = new mongoose.Schema(
     eventSummary: String,
     userId: String,
     foldername:String,
+    qrURL:String,
     active: {
       type: Boolean,
       default: true,
