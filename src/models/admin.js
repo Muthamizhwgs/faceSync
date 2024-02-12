@@ -21,13 +21,56 @@ const AdminSchema = new mongoose.Schema(
     password: {
       type: String,
     },
+    contact:{
+      type:String,
+    },
+    email:{
+      type:String
+    },
+    userId:String,
   },
   { timestamps: true }
 );
 
 const Admin = mongoose.model('admin', AdminSchema)
 
+const EventSchema = new mongoose.Schema({
+  _id:{
+    type:String,
+    default:v4
+  },
+  eventName:String,
+  eventLocation:String,
+  eventDate:String,
+  eventSummary:String,
+  userId:String,
+  active:{
+    type:Boolean,
+    default:true
+  }
+},{timestamps:true})
+
+const Event = mongoose.model('events', EventSchema)
+
+const PhotographerSchema = new mongoose.Schema({
+  _id:{
+    type:String,
+    default:v4
+  },
+  photographerName:String,
+  photographerContact:String,
+  photographeremail:String,
+  userId:String,
+  active:{
+    type:Boolean,
+    default:true
+  }
+},{timestamps:true})
+
+const PhotoGrapher = mongoose.model('photographer', PhotographerSchema)
 
 module.exports = {
-    Admin
+    Admin,
+    Event,
+    PhotoGrapher
 }
