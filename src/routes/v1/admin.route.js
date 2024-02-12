@@ -14,6 +14,6 @@ router.route('/updateEvents/:id').put(Auth,AdminController.updateEventsById);
 router.route('/update/Photographer/:id').put(Auth,AdminController.updatePhotographer);
 router.route('/event/assign').post(Auth,AdminController.EventAssign_to_PhotoGrapher);
 router.route('/getEventsBy/PhotoGrapher').get(Auth,AdminController.getEventsByPhotoGrapher)
-router.route('/get/admins').get(Auth, AdminController.getAdmins)
+router.route('/get/admins').get(Auth, AdminController.getAdmins);
 
 module.exports = router

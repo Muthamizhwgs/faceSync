@@ -77,5 +77,5 @@ module.exports = {
     updatePhotographer,
     EventAssign_to_PhotoGrapher,
     getEventsByPhotoGrapher,
-    getAdmins
+    getAdmins,
 }

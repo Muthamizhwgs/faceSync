@@ -1,7 +1,7 @@
 const { Admin, Event, PhotoGrapher, EventAssign } = require('../models/admin');
 const ApiError = require('../utils/ApiError');
 const httpStatus = require('http-status');
-const Aws = require('aws-sdk');
+const AWS = require('aws-sdk');
 
 function generateSixDigitPasswordWithLetters() {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -28,7 +28,8 @@ const Login = async (req) => {
 };
 
 const createEvents = async (req) => {
-  let creations = await Event.create({ ...req.body, ...{ userId: req.userId } });
+  let foldername = await folderCreationDemo(req.body.eventName)
+  let creations = await Event.create({ ...req.body, ...{ userId: req.userId, foldername:foldername } });
   return creations;
 };
 
@@ -150,23 +151,42 @@ const getAdmins = async (req) => {
     {
       $match: {
         userId: req.userId,
+        role:"admins"
       },
     },
   ]);
   return values;
 };
 
-const folderCreationDemo = async () => {
+const folderCreationDemo = async (folderName) => {
   // Aws
-  const spacesEndpoint = new AWS.Endpoint('https://facesync.blr1.cdn.digitaloceanspaces.com');
-
+  const spacesEndpoint = new AWS.Endpoint('https://blr1.digitaloceanspaces.com');
   const s3 = new AWS.S3({
-    endpoint: 'https://facesync.blr1.cdn.digitaloceanspaces.com',
-    useAccelerateEndpoint: false,
-    s3ForcePathStyle: false,
-    region: 'us-east-1',
+    endpoint: spacesEndpoint,
+    // useAccelerateEndpoint: false,
+    // s3ForcePathStyle: false,
+    // region: 'us-east-1',
     credentials: new AWS.Credentials('DO00EJFRZZE7JJX4HYJW', 'sORWVDUfafFT0LP9O52AM56mMLsnXARg0AH60qQRF8k'),
   });
+  let pwd = generateSixDigitPasswordWithLetters();
+  async function createFolder(folderPath) {
+    try {
+      await s3.putObject({
+        Bucket: 'facesync',
+        Key: folderPath,
+        Body: ''
+      }).promise();
+    } catch (error) {
+      console.error(`Error creating folder ${folderPath}:`, error);
+    }
+  }
+  async function createFolders() {
+    await createFolder(`${folderName}-${pwd}/`);
+    await createFolder(`${folderName}-${pwd}/user/`);
+    await createFolder(`${folderName}-${pwd}/photographer/`);
+  }
+  createFolders();
+  return `${folderName}-${pwd}`
 };
 
 module.exports = {
@@ -181,5 +201,5 @@ module.exports = {
   updatePhotographer,
   EventAssign_to_PhotoGrapher,
   getEventsByPhotoGrapher,
-  getAdmins
+  getAdmins,
 };

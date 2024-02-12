@@ -46,6 +46,7 @@ const EventSchema = new mongoose.Schema(
     eventDate: String,
     eventSummary: String,
     userId: String,
+    foldername:String,
     active: {
       type: Boolean,
       default: true,
