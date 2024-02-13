@@ -25,49 +25,70 @@ const AdminSchema = new mongoose.Schema(
       type: String,
     },
     email: {
-      type: String
+      type: String,
     },
     userId: String,
   },
   { timestamps: true }
 );
 
-const Admin = mongoose.model('admin', AdminSchema)
+const Admin = mongoose.model('admin', AdminSchema);
 
-const EventSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    default: v4
+const EventSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: String,
+      default: v4,
+    },
+    eventName: String,
+    eventLocation: String,
+    eventDate: String,
+    eventSummary: String,
+    userId: String,
+    active: {
+      type: Boolean,
+      default: true,
+    },
   },
-  eventName: String,
-  eventLocation: String,
-  eventDate: String,
-  eventSummary: String,
-  userId: String,
-  active: {
-    type: Boolean,
-    default: true
-  }
-}, { timestamps: true })
+  { timestamps: true }
+);
 
-const Event = mongoose.model('events', EventSchema)
+const Event = mongoose.model('events', EventSchema);
 
-const PhotographerSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    default: v4
+const PhotographerSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: String,
+      default: v4,
+    },
+    photographerName: String,
+    photographerContact: String,
+    photographeremail: String,
+    userId: String,
+    active: {
+      type: Boolean,
+      default: true,
+    },
   },
-  photographerName: String,
-  photographerContact: String,
-  photographeremail: String,
-  userId: String,
-  active: {
-    type: Boolean,
-    default: true
-  }
-}, { timestamps: true })
+  { timestamps: true }
+);
 
-const PhotoGrapher = mongoose.model('photographer', PhotographerSchema)
+const PhotoGrapher = mongoose.model('photographer', PhotographerSchema);
+
+const EventAssignSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: String,
+      default: v4,
+    },
+    eventId: String,
+    photographerId: String,
+    userId: String,
+  },
+  { timestamps: true }
+);
+
+const EventAssign = mongoose.model('eventassign', EventAssignSchema);
 
 const TempImagSchema = new mongoose.Schema({
   _id: {
@@ -81,14 +102,15 @@ const TempImagSchema = new mongoose.Schema({
   imagesNmas: {
     type: Array,
     default: [],
-  }
-})
+  },
+});
 
-const TempImg = mongoose.model('tempimages', TempImagSchema)
+const TempImg = mongoose.model('tempimages', TempImagSchema);
 
 module.exports = {
   Admin,
   Event,
   PhotoGrapher,
   TempImg,
-}
+  EventAssign,
+};

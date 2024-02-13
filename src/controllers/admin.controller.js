@@ -124,6 +124,36 @@ const detectFace = async (req, res) => {
 };
 
 
+const createAdminBySuperAdmin = catchAsync(async(req,res)=>{
+    const data = await AdminService.createAdminBySuperAdmin(req);
+    res.send(data)
+}) 
+
+const updateEventsById = catchAsync(async(req,res)=>{
+    const data = await AdminService.updateEventsById(req);
+    res.send(data)
+})
+
+const updatePhotographer = catchAsync(async(req,res)=>{
+    const data = await AdminService.updatePhotographer(req);
+    res.send(data)
+})
+
+const EventAssign_to_PhotoGrapher = catchAsync(async(req,res)=>{
+    const data = await AdminService.EventAssign_to_PhotoGrapher(req);
+    res.send(data)
+})
+
+const getEventsByPhotoGrapher = catchAsync(async(req,res)=>{
+    const data = await AdminService.getEventsByPhotoGrapher(req);
+    res.send(data)
+})
+
+const getAdmins = catchAsync(async(req,res)=>{
+    const data = await AdminService.getAdmins(req);
+    res.send(data)
+})
+
 module.exports = {
     createFaceSyncUsers,
     Login,
@@ -131,5 +161,14 @@ module.exports = {
     getEvents,
     createPhotoGrapher,
     getPhotographers,
+<<<<<<< HEAD
     uploadGroupImages,
+=======
+    createAdminBySuperAdmin,
+    updateEventsById,
+    updatePhotographer,
+    EventAssign_to_PhotoGrapher,
+    getEventsByPhotoGrapher,
+    getAdmins,
+>>>>>>> 9eda31033b0ae7da32729a3978a74ee985106a2d
 }

@@ -49,6 +49,7 @@
     "prettier"
   ],
   "dependencies": {
+    "aws-sdk": "^2.1555.0",
     "bcryptjs": "^2.4.3",
     "canvas": "^2.11.2",
     "compression": "^1.7.4",
@@ -71,6 +72,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "pm2": "^5.1.0",
+    "qrcode": "^1.5.3",
     "swagger-jsdoc": "^6.0.8",
     "swagger-ui-express": "^4.1.6",
     "uuid": "^9.0.1",
