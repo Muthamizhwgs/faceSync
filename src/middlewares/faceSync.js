@@ -3,7 +3,8 @@ const path = require('path');
 
 let counts = 0;
 const storage = multer.diskStorage({
-  destination: function (req, res, cb) {
+  destination: function (req, _res, cb) {
+    console.log(req.body, "asdfg");
     cb(null, path.join(__dirname, '../../public/images'));
   },
   filename: function (req, file, cb) {
@@ -28,9 +29,9 @@ const uploadImage = multer({
       callback(null, false);
     }
   },
-//   limits: {
-//     fileSize: 3024 * 3024 * 3,
-//   },
+  //   limits: {
+  //     fileSize: 3024 * 3024 * 3,
+  //   },
 });
 
 module.exports = uploadImage;

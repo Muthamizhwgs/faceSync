@@ -14,12 +14,13 @@ const userSchema = mongoose.Schema(
     email: {
       type: String,
     },
-    contact:{
-      type:String,
+    contact: {
+      type: String,
     },
-    image:{
-      type:String
+    image: {
+      type: String,
     },
+    imageName: String,
   },
   {
     timestamps: true,

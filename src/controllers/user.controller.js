@@ -3,14 +3,15 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { userService } = require('../services');
+const Upload = require("../middlewares/faceSync")
 
 const createUser = catchAsync(async (req, res) => {
-  console.log(req.file, "asdfsadf")
-    const user = await userService.createUser(req.body);
-  if(req.file){
-    let path = 'images/'+req.file.filename
-    user.image = path
-    user.save()
+  const user = await userService.createUser(req.body);
+  if (req.file) {
+    let path = 'images/' + req.file.filename;
+    user.imageName = req.file.filename;
+    user.image = path;
+    user.save();
   }
   res.status(httpStatus.CREATED).send(user);
 });

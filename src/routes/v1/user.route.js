@@ -3,12 +3,12 @@ const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const userValidation = require('../../validations/user.validation');
 const userController = require('../../controllers/user.controller');
-const Upload = require('../../middlewares/faceSync')
+const Upload = require('../../middlewares/faceSync');
 const router = express.Router();
 
 router
   .route('/')
-  .post(Upload.single('image'),userController.createUser)
+  .post(Upload.single('image'), userController.createUser)
   .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers);
 
 router
