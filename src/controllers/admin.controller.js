@@ -161,6 +161,7 @@ module.exports = {
     getEvents,
     createPhotoGrapher,
     getPhotographers,
+    uploadGroupImages,
     createAdminBySuperAdmin,
     updateEventsById,
     updatePhotographer,
