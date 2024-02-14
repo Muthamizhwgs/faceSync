@@ -161,14 +161,10 @@ module.exports = {
     getEvents,
     createPhotoGrapher,
     getPhotographers,
-<<<<<<< HEAD
-    uploadGroupImages,
-=======
     createAdminBySuperAdmin,
     updateEventsById,
     updatePhotographer,
     EventAssign_to_PhotoGrapher,
     getEventsByPhotoGrapher,
     getAdmins,
->>>>>>> 9eda31033b0ae7da32729a3978a74ee985106a2d
 }
