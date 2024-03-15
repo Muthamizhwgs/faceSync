@@ -29,7 +29,8 @@ const Login = async (req) => {
 };
 
 const createEvents = async (req) => {
-  let foldername = await folderCreationDemo(req.body.eventName);
+
+  let foldername = await folderCreationDemo(req.body.eventName.replace(/\s/g, ''));
   let qrURL = await uploadQr(foldername);
   let creations = await Event.create({ ...req.body, ...{ userId: req.userId, foldername: foldername,qrURL:qrURL } });
   return creations;
